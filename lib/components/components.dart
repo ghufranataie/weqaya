@@ -1199,3 +1199,28 @@ class UserDetails extends StatelessWidget {
   }
 
 }
+
+class NoData extends StatelessWidget {
+  final String? assetLink;
+  final String content;
+  const NoData({Key? key, this.assetLink = "assets/images/noData.png", required this.content}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(
+        maxWidth: 400
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(assetLink!, fit: BoxFit.fitWidth, width: 200),
+          const SizedBox(height: 15),
+          Text(content, textDirection: TextDirection.rtl),
+          const SizedBox(height: 10),
+          ElevatedButton(onPressed: ()=> Navigator.pop(context), child: const Text("برگشت"))
+        ],
+      ),
+    );
+  }
+}

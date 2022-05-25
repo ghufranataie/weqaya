@@ -54,179 +54,356 @@ class _DoctorsState extends State<Doctors> {
           child: StreamBuilder(
             stream: _doctorsList(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    var doc = snapshot.data!.docs[index];
-                    return Container(
-                        margin: const EdgeInsets.only(
-                            top: 10, right: 20, left: 20, bottom: 0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: const BorderRadius.all(Radius.circular(20)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 3,
-                              blurRadius: 4,
-                              offset:
-                              const Offset(0, 1), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            InkWell(
-                              onTap: () async{
-                                //var ratingSnapshot = await FirebaseFirestore.instance.collection("doctors").doc(doc.id).collection("rate").doc().get();
-                                Env.goto(context, ViewDoctor(docID: doc.id));
-                              },
-                              child: Directionality(
-                                textDirection: TextDirection.rtl,
-                                child: Container(
-                                  margin: const EdgeInsets.all(10),
-                                  decoration: const BoxDecoration(
-                                    //color: Colors.blue,
-                                      borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Row(
-                                      children: [
-                                        doc['docVerify'] == true
-                                            ? Icon(Icons.verified_rounded,
-                                            color: Env.appColor)
-                                            : Container(),
-                                        Text(
-                                          " " + doc['docFullName'],
-                                          style: const TextStyle(
-                                              fontSize: 20, color: Colors.black),
+              if(snapshot.connectionState == ConnectionState.active){
+                if(snapshot.data==null || snapshot.data!.docs.isEmpty){
+                  return const Center(
+                    child: NoData(content: "معذرت میخواهیم داکتر مورد نظر دریافت نگردید!"),
+                  );
+                }else{
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      var doc = snapshot.data!.docs[index];
+                      return Container(
+                          margin: const EdgeInsets.only(
+                              top: 10, right: 20, left: 20, bottom: 0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.all(Radius.circular(20)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 3,
+                                blurRadius: 4,
+                                offset:
+                                const Offset(0, 1), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              InkWell(
+                                onTap: () async{
+                                  //var ratingSnapshot = await FirebaseFirestore.instance.collection("doctors").doc(doc.id).collection("rate").doc().get();
+                                  Env.goto(context, ViewDoctor(docID: doc.id));
+                                },
+                                child: Directionality(
+                                  textDirection: TextDirection.rtl,
+                                  child: Container(
+                                    margin: const EdgeInsets.all(10),
+                                    decoration: const BoxDecoration(
+                                      //color: Colors.blue,
+                                        borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                    child: ListTile(
+                                      contentPadding: EdgeInsets.zero,
+                                      title: Row(
+                                        children: [
+                                          doc['docVerify'] == true
+                                              ? Icon(Icons.verified_rounded,
+                                              color: Env.appColor)
+                                              : Container(),
+                                          Text(
+                                            " " + doc['docFullName'],
+                                            style: const TextStyle(
+                                                fontSize: 20, color: Colors.black),
+                                          ),
+                                        ],
+                                      ),
+                                      subtitle: Column(
+                                        children: [
+                                          if (doc['docSpecialization'] != null)
+                                            Align(
+                                                alignment: Alignment.topRight,
+                                                child: Text(
+                                                  doc['docSpecialization'],
+                                                  style:
+                                                  const TextStyle(fontSize: 12),
+                                                )),
+                                          if (doc['docEmail'] != null)
+                                            Align(
+                                                alignment: Alignment.topRight,
+                                                child: Text(
+                                                  doc['docEmail'],
+                                                  style:
+                                                  const TextStyle(fontSize: 12),
+                                                )),
+                                          if (doc['docPhone'] != null)
+                                            Align(
+                                                alignment: Alignment.topRight,
+                                                child: Text(
+                                                  doc['docPhone'],
+                                                  style:
+                                                  const TextStyle(fontSize: 12),
+                                                )),
+                                          if (doc['docWorkAddress'] != null)
+                                            Align(
+                                                alignment: Alignment.topRight,
+                                                child: Text(
+                                                  doc['docWorkAddress'],
+                                                  style:
+                                                  const TextStyle(fontSize: 12),
+                                                ))
+                                        ],
+                                      ),
+                                      //leading: Icon(Icons.account_circle),
+                                      leading: Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color.fromARGB(255, 202, 216, 255),
                                         ),
-                                      ],
-                                    ),
-                                    subtitle: Column(
-                                      children: [
-                                        if (doc['docSpecialization'] != null)
-                                          Align(
-                                              alignment: Alignment.topRight,
-                                              child: Text(
-                                                doc['docSpecialization'],
-                                                style:
-                                                const TextStyle(fontSize: 12),
-                                              )),
-                                        if (doc['docEmail'] != null)
-                                          Align(
-                                              alignment: Alignment.topRight,
-                                              child: Text(
-                                                doc['docEmail'],
-                                                style:
-                                                const TextStyle(fontSize: 12),
-                                              )),
-                                        if (doc['docPhone'] != null)
-                                          Align(
-                                              alignment: Alignment.topRight,
-                                              child: Text(
-                                                doc['docPhone'],
-                                                style:
-                                                const TextStyle(fontSize: 12),
-                                              )),
-                                        if (doc['docWorkAddress'] != null)
-                                          Align(
-                                              alignment: Alignment.topRight,
-                                              child: Text(
-                                                doc['docWorkAddress'],
-                                                style:
-                                                const TextStyle(fontSize: 12),
-                                              ))
-                                      ],
-                                    ),
-                                    //leading: Icon(Icons.account_circle),
-                                    leading: Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color.fromARGB(255, 202, 216, 255),
+                                        child: ClipOval(
+                                          child: doc['docPhotoUrl'] == null
+                                              ? Image.asset(
+                                              "assets/images/drPhoto.png")
+                                              : Image.network(doc['docPhotoUrl']),
+                                        ),
                                       ),
-                                      child: ClipOval(
-                                        child: doc['docPhotoUrl'] == null
-                                            ? Image.asset(
-                                            "assets/images/drPhoto.png")
-                                            : Image.network(doc['docPhotoUrl']),
+                                      trailing: Icon(
+                                        Icons.arrow_right,
+                                        size: 35,
+                                        color: Env.appColor,
                                       ),
-                                    ),
-                                    trailing: Icon(
-                                      Icons.arrow_right,
-                                      size: 35,
-                                      color: Env.appColor,
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(width: 20),
-                                doc['docPhone'] != null
-                                    ? IconButton(
-                                    icon: const Icon(
-                                      FontAwesomeIcons.phoneAlt,
-                                      size: 30,
-                                    ),
-                                    onPressed: () async {
-                                      if (doc['docPhone'] != null) {
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const SizedBox(width: 20),
+                                  doc['docPhone'] != null
+                                      ? IconButton(
+                                      icon: const Icon(
+                                        FontAwesomeIcons.phoneAlt,
+                                        size: 30,
+                                      ),
+                                      onPressed: () async {
+                                        if (doc['docPhone'] != null) {
+                                          // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
+                                        }
+                                      })
+                                      : Container(),
+                                  doc['docPhone'] != null
+                                      ? IconButton(
+                                      icon: const Icon(
+                                        FontAwesomeIcons.whatsapp,
+                                        size: 25,
+                                      ),
+                                      onPressed: () async {
                                         // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
-                                      }
-                                    })
-                                    : Container(),
-                                doc['docPhone'] != null
-                                    ? IconButton(
-                                    icon: const Icon(
-                                      FontAwesomeIcons.whatsapp,
-                                      size: 25,
-                                    ),
-                                    onPressed: () async {
-                                      // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
-                                    })
-                                    : Container(),
-                                doc['docPhone'] != null
-                                    ? IconButton(
-                                    icon: const Icon(
-                                      Icons.email_outlined,
-                                      size: 25,
-                                    ),
-                                    onPressed: () async {
-                                      // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
-                                    })
-                                    : Container(),
-                                doc['docPhone'] != null
-                                    ? IconButton(
-                                    icon: const Icon(
-                                      FontAwesomeIcons.map,
-                                      size: 25,
-                                    ),
-                                    onPressed: () async {
-                                      // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
-                                    })
-                                    : Container(),
-                              ],
-                            ),
-                            const SizedBox(height: 10)
-                          ],
-                        ));
-                  },
-                );
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                                      })
+                                      : Container(),
+                                  doc['docPhone'] != null
+                                      ? IconButton(
+                                      icon: const Icon(
+                                        Icons.email_outlined,
+                                        size: 25,
+                                      ),
+                                      onPressed: () async {
+                                        // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
+                                      })
+                                      : Container(),
+                                  doc['docPhone'] != null
+                                      ? IconButton(
+                                      icon: const Icon(
+                                        FontAwesomeIcons.map,
+                                        size: 25,
+                                      ),
+                                      onPressed: () async {
+                                        // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
+                                      })
+                                      : Container(),
+                                ],
+                              ),
+                              const SizedBox(height: 10)
+                            ],
+                          ));
+                    },
+                  );
+                }
+              }else{
                 return Center(
                   child: SpinKitCircle(
                     color: Env.appColor,
                     size: 150,
                   ),
                 );
-              } else {
-                return const Text("No Data");
               }
+              // if (snapshot.hasData) {
+              //   return ListView.builder(
+              //     itemCount: snapshot.data!.docs.length,
+              //     itemBuilder: (context, index) {
+              //       var doc = snapshot.data!.docs[index];
+              //       return Container(
+              //           margin: const EdgeInsets.only(
+              //               top: 10, right: 20, left: 20, bottom: 0),
+              //           decoration: BoxDecoration(
+              //             color: Colors.white,
+              //             borderRadius: const BorderRadius.all(Radius.circular(20)),
+              //             boxShadow: [
+              //               BoxShadow(
+              //                 color: Colors.grey.withOpacity(0.5),
+              //                 spreadRadius: 3,
+              //                 blurRadius: 4,
+              //                 offset:
+              //                 const Offset(0, 1), // changes position of shadow
+              //               ),
+              //             ],
+              //           ),
+              //           child: Column(
+              //             children: [
+              //               InkWell(
+              //                 onTap: () async{
+              //                   //var ratingSnapshot = await FirebaseFirestore.instance.collection("doctors").doc(doc.id).collection("rate").doc().get();
+              //                   Env.goto(context, ViewDoctor(docID: doc.id));
+              //                 },
+              //                 child: Directionality(
+              //                   textDirection: TextDirection.rtl,
+              //                   child: Container(
+              //                     margin: const EdgeInsets.all(10),
+              //                     decoration: const BoxDecoration(
+              //                       //color: Colors.blue,
+              //                         borderRadius:
+              //                         BorderRadius.all(Radius.circular(20))),
+              //                     child: ListTile(
+              //                       contentPadding: EdgeInsets.zero,
+              //                       title: Row(
+              //                         children: [
+              //                           doc['docVerify'] == true
+              //                               ? Icon(Icons.verified_rounded,
+              //                               color: Env.appColor)
+              //                               : Container(),
+              //                           Text(
+              //                             " " + doc['docFullName'],
+              //                             style: const TextStyle(
+              //                                 fontSize: 20, color: Colors.black),
+              //                           ),
+              //                         ],
+              //                       ),
+              //                       subtitle: Column(
+              //                         children: [
+              //                           if (doc['docSpecialization'] != null)
+              //                             Align(
+              //                                 alignment: Alignment.topRight,
+              //                                 child: Text(
+              //                                   doc['docSpecialization'],
+              //                                   style:
+              //                                   const TextStyle(fontSize: 12),
+              //                                 )),
+              //                           if (doc['docEmail'] != null)
+              //                             Align(
+              //                                 alignment: Alignment.topRight,
+              //                                 child: Text(
+              //                                   doc['docEmail'],
+              //                                   style:
+              //                                   const TextStyle(fontSize: 12),
+              //                                 )),
+              //                           if (doc['docPhone'] != null)
+              //                             Align(
+              //                                 alignment: Alignment.topRight,
+              //                                 child: Text(
+              //                                   doc['docPhone'],
+              //                                   style:
+              //                                   const TextStyle(fontSize: 12),
+              //                                 )),
+              //                           if (doc['docWorkAddress'] != null)
+              //                             Align(
+              //                                 alignment: Alignment.topRight,
+              //                                 child: Text(
+              //                                   doc['docWorkAddress'],
+              //                                   style:
+              //                                   const TextStyle(fontSize: 12),
+              //                                 ))
+              //                         ],
+              //                       ),
+              //                       //leading: Icon(Icons.account_circle),
+              //                       leading: Container(
+              //                         padding: const EdgeInsets.all(5),
+              //                         decoration: const BoxDecoration(
+              //                           shape: BoxShape.circle,
+              //                           color: Color.fromARGB(255, 202, 216, 255),
+              //                         ),
+              //                         child: ClipOval(
+              //                           child: doc['docPhotoUrl'] == null
+              //                               ? Image.asset(
+              //                               "assets/images/drPhoto.png")
+              //                               : Image.network(doc['docPhotoUrl']),
+              //                         ),
+              //                       ),
+              //                       trailing: Icon(
+              //                         Icons.arrow_right,
+              //                         size: 35,
+              //                         color: Env.appColor,
+              //                       ),
+              //                     ),
+              //                   ),
+              //                 ),
+              //               ),
+              //               Row(
+              //                 mainAxisAlignment: MainAxisAlignment.start,
+              //                 children: [
+              //                   const SizedBox(width: 20),
+              //                   doc['docPhone'] != null
+              //                       ? IconButton(
+              //                       icon: const Icon(
+              //                         FontAwesomeIcons.phoneAlt,
+              //                         size: 30,
+              //                       ),
+              //                       onPressed: () async {
+              //                         if (doc['docPhone'] != null) {
+              //                           // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
+              //                         }
+              //                       })
+              //                       : Container(),
+              //                   doc['docPhone'] != null
+              //                       ? IconButton(
+              //                       icon: const Icon(
+              //                         FontAwesomeIcons.whatsapp,
+              //                         size: 25,
+              //                       ),
+              //                       onPressed: () async {
+              //                         // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
+              //                       })
+              //                       : Container(),
+              //                   doc['docPhone'] != null
+              //                       ? IconButton(
+              //                       icon: const Icon(
+              //                         Icons.email_outlined,
+              //                         size: 25,
+              //                       ),
+              //                       onPressed: () async {
+              //                         // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
+              //                       })
+              //                       : Container(),
+              //                   doc['docPhone'] != null
+              //                       ? IconButton(
+              //                       icon: const Icon(
+              //                         FontAwesomeIcons.map,
+              //                         size: 25,
+              //                       ),
+              //                       onPressed: () async {
+              //                         // await FlutterPhoneDirectCaller.callNumber(doc['docPhone']);
+              //                       })
+              //                       : Container(),
+              //                 ],
+              //               ),
+              //               const SizedBox(height: 10)
+              //             ],
+              //           ));
+              //     },
+              //   );
+              // } else if (snapshot.connectionState == ConnectionState.waiting) {
+              //   return Center(
+              //     child: SpinKitCircle(
+              //       color: Env.appColor,
+              //       size: 150,
+              //     ),
+              //   );
+              // } else {
+              //   return const Text("No Data");
+              // }
             },
           ),
         ),
@@ -260,131 +437,258 @@ class _DoctorsState extends State<Doctors> {
     return StreamBuilder(
       stream: _doctorsList(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasData) {
-          return Directionality(
-            textDirection: TextDirection.rtl,
-            child: Center(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 260, mainAxisExtent: 210),
-                itemCount: snapshot.data!.docs.length,
-                itemBuilder: (context, index) {
-                  var doc = snapshot.data!.docs[index];
-                  return GestureDetector(
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                      elevation: 5.0,
-                      margin: const EdgeInsets.all(10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  ClipOval(
-                                    child: doc['docPhotoUrl'] == null
-                                        ? Image.asset("assets/images/drPhoto.png",
-                                        width: 70)
-                                        : CachedNetworkImage(
-                                      width: 70,
-                                      height: 70,
-                                      imageUrl: doc['docPhotoUrl'],
-                                      placeholder: (context, url) =>
-                                          SpinKitCircle(color: Env.appColor),
-                                      errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: doc['docVerify'] == true
-                                        ? Container(
-                                      decoration: const BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.white,
-                                                spreadRadius: 1,
-                                                blurRadius: 10)
-                                          ]),
-                                      child: const Icon(
-                                        Icons.verified_rounded,
-                                        size: 25,
+        if(snapshot.connectionState == ConnectionState.active){
+          if(snapshot.data==null || snapshot.data!.docs.isEmpty){
+            return const Center(
+              child: NoData(content: "معذرت میخواهیم داکتر مورد نظر دریافت نگردید!"),
+            );
+          }else{
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: Center(
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 260, mainAxisExtent: 210),
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    var doc = snapshot.data!.docs[index];
+                    return GestureDetector(
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                        elevation: 5.0,
+                        margin: const EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ClipOval(
+                                      child: doc['docPhotoUrl'] == null
+                                          ? Image.asset("assets/images/drPhoto.png",
+                                          width: 70)
+                                          : CachedNetworkImage(
+                                        width: 70,
+                                        height: 70,
+                                        imageUrl: doc['docPhotoUrl'],
+                                        placeholder: (context, url) =>
+                                            SpinKitCircle(color: Env.appColor),
+                                        errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
                                       ),
-                                    )
-                                        : Container(),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                doc['docFullName'],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              ShowRatingStars(
-                                docID: doc.id,
-                                collection: 'doctors',
-                                starSize: 15,
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.location_on, color: Colors.red, size: 15,),
-                                  Text(
-                                    doc['docCity'] ?? '',
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(color: Colors.grey),
-                                  ),
-                                ],
-                              ), // :
-                              //Container(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text((doc['docSpecialization']?? ' ') + ' ',
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(color: Colors.grey, height: 1, fontSize: 12),
-                                  ),
-                                  Text(doc['docField'] ?? '',
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: doc['docVerify'] == true
+                                          ? Container(
+                                        decoration: const BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.white,
+                                                  spreadRadius: 1,
+                                                  blurRadius: 10)
+                                            ]),
+                                        child: const Icon(
+                                          Icons.verified_rounded,
+                                          size: 25,
+                                        ),
+                                      )
+                                          : Container(),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  doc['docFullName'],
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.bold),
+                                ),
+                                ShowRatingStars(
+                                  docID: doc.id,
+                                  collection: 'doctors',
+                                  starSize: 15,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.location_on, color: Colors.red, size: 15,),
+                                    Text(
+                                      doc['docCity'] ?? '',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ), // :
+                                //Container(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text((doc['docSpecialization']?? ' ') + ' ',
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(color: Colors.grey, height: 1, fontSize: 12),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
+                                    ),
+                                    Text(doc['docField'] ?? '',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(color: Colors.grey, height: 1, fontSize: 12),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    onTap: () async{
-                      //var ratingSnapshot = await FirebaseFirestore.instance.collection("doctors").doc(doc.id).collection("rate").doc().get();
-                      Env.goto(context, ViewDoctor(docID: doc.id));
-                    },
-                  );
-                },
+                      onTap: () async{
+                        //var ratingSnapshot = await FirebaseFirestore.instance.collection("doctors").doc(doc.id).collection("rate").doc().get();
+                        Env.goto(context, ViewDoctor(docID: doc.id));
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-          );
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
+            );
+          }
+        }else{
           return Center(
             child: SpinKitCircle(
               color: Env.appColor,
               size: 150,
             ),
           );
-        } else if(snapshot.connectionState == ConnectionState.none){
-          return const Center(child: Text("داکتر وجود ندارد"));
-        } else {
-          return const Center(child: Text("داکتر وجود ندارد"));
         }
+        // if (snapshot.hasData) {
+        //   return Directionality(
+        //     textDirection: TextDirection.rtl,
+        //     child: Center(
+        //       child: GridView.builder(
+        //         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 260, mainAxisExtent: 210),
+        //         itemCount: snapshot.data!.docs.length,
+        //         itemBuilder: (context, index) {
+        //           var doc = snapshot.data!.docs[index];
+        //           return GestureDetector(
+        //             child: Card(
+        //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        //               elevation: 5.0,
+        //               margin: const EdgeInsets.all(10),
+        //               child: Column(
+        //                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //                 crossAxisAlignment: CrossAxisAlignment.center,
+        //                 children: [
+        //                   Column(
+        //                     children: [
+        //                       Stack(
+        //                         alignment: Alignment.center,
+        //                         children: [
+        //                           ClipOval(
+        //                             child: doc['docPhotoUrl'] == null
+        //                                 ? Image.asset("assets/images/drPhoto.png",
+        //                                 width: 70)
+        //                                 : CachedNetworkImage(
+        //                               width: 70,
+        //                               height: 70,
+        //                               imageUrl: doc['docPhotoUrl'],
+        //                               placeholder: (context, url) =>
+        //                                   SpinKitCircle(color: Env.appColor),
+        //                               errorWidget: (context, url, error) =>
+        //                               const Icon(Icons.error),
+        //                             ),
+        //                           ),
+        //                           Positioned(
+        //                             bottom: 0,
+        //                             right: 0,
+        //                             child: doc['docVerify'] == true
+        //                                 ? Container(
+        //                               decoration: const BoxDecoration(
+        //                                   boxShadow: [
+        //                                     BoxShadow(
+        //                                         color: Colors.white,
+        //                                         spreadRadius: 1,
+        //                                         blurRadius: 10)
+        //                                   ]),
+        //                               child: const Icon(
+        //                                 Icons.verified_rounded,
+        //                                 size: 25,
+        //                               ),
+        //                             )
+        //                                 : Container(),
+        //                           ),
+        //                         ],
+        //                       ),
+        //                       Text(
+        //                         doc['docFullName'],
+        //                         textAlign: TextAlign.center,
+        //                         style: const TextStyle(
+        //                             fontSize: 20, fontWeight: FontWeight.bold),
+        //                       ),
+        //                       ShowRatingStars(
+        //                         docID: doc.id,
+        //                         collection: 'doctors',
+        //                         starSize: 15,
+        //                       ),
+        //                     ],
+        //                   ),
+        //                   Column(
+        //                     mainAxisAlignment: MainAxisAlignment.end,
+        //                     children: [
+        //                       Row(
+        //                         mainAxisAlignment: MainAxisAlignment.center,
+        //                         children: [
+        //                           const Icon(Icons.location_on, color: Colors.red, size: 15,),
+        //                           Text(
+        //                             doc['docCity'] ?? '',
+        //                             textAlign: TextAlign.center,
+        //                             style: const TextStyle(color: Colors.grey),
+        //                           ),
+        //                         ],
+        //                       ), // :
+        //                       //Container(),
+        //                       Row(
+        //                         mainAxisAlignment: MainAxisAlignment.center,
+        //                         children: [
+        //                           Text((doc['docSpecialization']?? ' ') + ' ',
+        //                             textAlign: TextAlign.center,
+        //                             style: const TextStyle(color: Colors.grey, height: 1, fontSize: 12),
+        //                           ),
+        //                           Text(doc['docField'] ?? '',
+        //                               textAlign: TextAlign.center,
+        //                               style: const TextStyle(color: Colors.grey, height: 1, fontSize: 12),
+        //                           ),
+        //                         ],
+        //                       )
+        //                     ],
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             onTap: () async{
+        //               //var ratingSnapshot = await FirebaseFirestore.instance.collection("doctors").doc(doc.id).collection("rate").doc().get();
+        //               Env.goto(context, ViewDoctor(docID: doc.id));
+        //             },
+        //           );
+        //         },
+        //       ),
+        //     ),
+        //   );
+        // } else if (snapshot.connectionState == ConnectionState.waiting) {
+        //   return Center(
+        //     child: SpinKitCircle(
+        //       color: Env.appColor,
+        //       size: 150,
+        //     ),
+        //   );
+        // } else if(snapshot.connectionState == ConnectionState.none){
+        //   return const Center(child: Text("داکتر وجود ندارد"));
+        // } else {
+        //   return const Center(child: Text("داکتر وجود ندارد"));
+        // }
       },
     );
   }

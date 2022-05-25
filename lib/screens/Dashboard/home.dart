@@ -13,6 +13,7 @@ import 'package:weqaya/screens/QA/questions.dart';
 import 'package:weqaya/components/stuff.dart';
 import 'package:weqaya/components/mainDrawer.dart';
 import 'package:weqaya/components/provider.dart';
+import 'package:weqaya/screens/aboutUs.dart';
 import 'package:weqaya/screens/soon.dart';
 import 'package:weqaya/screens/splash.dart';
 import 'dashboard_module.dart';
@@ -353,7 +354,7 @@ class _HomeState extends State<Home> {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
                                 color: Colors.white)),
-                        onTap: () => Env.goto(context, const Soon(pageName: "درباره ما",)),
+                        onTap: () => Env.goto(context, const AboutUs()),
                       ),
                     ],
                   ),

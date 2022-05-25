@@ -53,91 +53,51 @@ Widget loadPosts(String catName) {
         .snapshots(),
     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
-      if(snapshot.hasData){
-        return ListView.builder(
-          itemCount: snapshot.data!.docs.length,
-          itemBuilder: (context, index) {
-            var posts = snapshot.data!.docs[index];
-            return GestureDetector(
-              onTap: () => Env.goto(context, MedicalPostView(post: posts,)),
-              child: Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-                elevation: 5,
-                child: Container(
-                  height: 100,
-                  //color: Colors.teal.shade200,
-                  margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: Text(posts['postSubject'] ?? "", textAlign: TextAlign.right, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                        ),
-                        postDetails(posts.id),
-                      ],
+      if(snapshot.connectionState == ConnectionState.active){
+        if(snapshot.data==null || snapshot.data!.docs.isEmpty){
+          return const Center(
+            child: NoData(content: "معذرت میخواهیم معلومات موجود نمیباشد!"),
+          );
+        }else{
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              var posts = snapshot.data!.docs[index];
+              return GestureDetector(
+                onTap: () => Env.goto(context, MedicalPostView(post: posts,)),
+                child: Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                  elevation: 5,
+                  child: Container(
+                    height: 100,
+                    //color: Colors.teal.shade200,
+                    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20),
+                            child: Text(posts['postSubject'] ?? "", textAlign: TextAlign.right, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                          ),
+                          postDetails(posts.id),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      }else if(snapshot.data == null){
-        return const Center(child: Text("معلومات موجود نمیباشد"));
+              );
+            },
+          );
+        }
       }else{
-        return const Text("Empty");
+        return Center(
+          child: SpinKitCircle(
+            color: Env.appColor,
+            size: 150,
+          ),
+        );
       }
-
-      // if (snapshot.hasData) {
-      //   return ListView.builder(
-      //     itemCount: snapshot.data!.docs.length,
-      //     itemBuilder: (context, index) {
-      //       var posts = snapshot.data!.docs[index];
-      //       return GestureDetector(
-      //         onTap: () => Env.goto(context, MedicalPostView(post: posts,)),
-      //         child: Card(
-      //           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      //           elevation: 5,
-      //           child: Container(
-      //             height: 100,
-      //             //color: Colors.teal.shade200,
-      //             margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      //             child: SingleChildScrollView(
-      //               child: Column(
-      //                 crossAxisAlignment: CrossAxisAlignment.end,
-      //                 children: [
-      //                   Padding(
-      //                     padding: const EdgeInsets.only(right: 20),
-      //                     child: Text(posts['postSubject'] ?? "", textAlign: TextAlign.right, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-      //                   ),
-      //                   postDetails(posts.id),
-      //                 ],
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //       );
-      //     },
-      //   );
-      // } else if (snapshot.connectionState == ConnectionState.waiting) {
-      //   return Center(
-      //     child: SpinKitCircle(
-      //       color: Env.appColor,
-      //       size: 150,
-      //     ),
-      //   );
-      // } else if(snapshot.data == null) {
-      //   return const Center(child: Text("معلومات موجود نمیباشد"));
-      // }else{
-      //   return Center(
-      //     child: SpinKitCircle(
-      //       color: Env.appColor,
-      //       size: 150,
-      //     ),
-      //   );
-      // }
     },
   );
 }

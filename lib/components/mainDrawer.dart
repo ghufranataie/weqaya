@@ -8,6 +8,8 @@ import 'package:weqaya/screens/soon.dart';
 import 'package:weqaya/screens/users/userServices.dart';
 import 'package:weqaya/components/stuff.dart';
 
+import '../screens/aboutUs.dart';
+
 class MainDrawer extends StatefulWidget {
   const MainDrawer({Key? key}) : super(key: key);
 
@@ -130,7 +132,7 @@ class _MainDrawerState extends State<MainDrawer> {
                       title: const Text("در باره ما"),
                       onTap: () {
                         Navigator.of(context).pop();
-                        Env.goto(context, const Soon(pageName: "درباره ما",));
+                        Env.goto(context, const AboutUs());
                       },
                     ),
                   ),

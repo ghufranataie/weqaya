@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:weqaya/components/provider.dart';
 import 'package:weqaya/components/stuff.dart';
 import 'package:weqaya/firebase_options.dart';
+import 'package:weqaya/screens/contactUs.dart';
 import 'package:weqaya/screens/splash.dart';
 
 void main() async {
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const Splash(),
+      home: const ContactUs(),
       theme: ThemeData(
         fontFamily: "Dubai",
         floatingActionButtonTheme: FloatingActionButtonThemeData(

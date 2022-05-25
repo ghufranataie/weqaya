@@ -15,7 +15,6 @@ class Env{
 
   String? typeChoose;
   String? cityChoose;
-  var list = ["پرسش و پاسخ طبی", "معلومات طبی", "محلات طبی", "داکتران", "ادویه جات", "معاینات لابراتواری",];
   static List<String> cities = [
     "انتخاب شهر",
     "مزارشریف",
